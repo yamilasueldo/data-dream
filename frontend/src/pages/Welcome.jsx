@@ -34,9 +34,8 @@ export const Welcome = () => {
   return (
     <div className="welcome-page">
       <div className="welcome-container">
-        {/* Header */}
         <div className="welcome-header">
-          <img src="/favicon.png" alt="DATA DREAM" className="logo-large" />
+          <img src="/public/images/favicon.png" alt="DATA DREAM" className="logo-large" />
           <h1>DATA DREAM</h1>
           <p className="subtitle">Yamila Sueldo</p>
         </div>

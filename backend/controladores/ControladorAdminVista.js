@@ -180,7 +180,8 @@ class ControladorAdminVista {
         color: color?.trim() || '',
         talla: talla?.trim() || '',
         material: material?.trim() || '',
-        imagen: req.file ? `/uploads/productos/${req.file.filename}` : '/img/default-product.png',
+        imagen : req.file ? `/uploads/productos/${req.file.filename}` : '/img/default-product.png',
+
         activo: true
       };
       

@@ -57,10 +57,21 @@ class ControladorProducto {
 
       console.log(`📊 Encontrados ${count} productos, página ${pagina}/${totalPaginas}`);
 
+      const productosConImagen = productos.map(p => {
+        const imagen = p.imagen && !p.imagen.includes('/uploads/')
+          ? `${req.protocol}://${req.get('host')}/uploads/productos/${p.imagen}`
+          : p.imagen || '/img/default-product.png';
+      
+        return {
+          ...p.toJSON(),
+          imagen
+        };
+      });
+      
       res.json({
         exito: true,
         datos: {
-          productos,
+          productos: productosConImagen,
           paginacion: {
             paginaActual: parseInt(pagina),
             totalPaginas,

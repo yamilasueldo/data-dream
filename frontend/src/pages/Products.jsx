@@ -137,12 +137,13 @@ export const Products = () => {
               <div key={producto.id} className="product-card">
                 <div className="product-image">
                   <img 
-                    src={producto.imagen} 
-                    alt={producto.nombre}
-                    onError={(e) => {
-                      e.target.src = '/img/default-product.png'
-                    }}
-                  />
+                  src={producto.imagen}
+                  alt={producto.nombre}
+                  onError={(e) => {
+                    e.target.src = '/img/default-product.png';
+                  }}
+                />
+
                   <div className="product-category">{producto.categoria}</div>
                 </div>
                 

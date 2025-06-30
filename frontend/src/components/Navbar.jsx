@@ -25,7 +25,7 @@ export const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-brand">
-          <img src="/favicon.png" alt="DATA DREAM" className="navbar-logo" />
+          <img src="/public/images/favicon.png" alt="DATA DREAM" className="navbar-logo" />
           <span className="navbar-title">DATA DREAM</span>
           <span className="navbar-author">Yamila Sueldo</span>
         </div>
