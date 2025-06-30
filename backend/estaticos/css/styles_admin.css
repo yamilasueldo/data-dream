@@ -1,0 +1,1021 @@
+/* backend/estaticos/css/styles_admin.css - CSS MEJORADO */
+
+:root {
+    --color-1: #f8f9fa;  /* Gris muy claro */
+    --color-2: #e9ecef;  /* Gris claro */
+    --color-3: #dee2e6;  /* Gris medio claro */
+    --color-4: #ced4da;  /* Gris medio */
+    --color-5: #adb5bd;  /* Gris */
+    --color-6: #6c757d;  /* Gris oscuro */
+    --color-7: #495057;  /* Gris muy oscuro */
+    --color-8: #343a40;  /* Negro grisáceo */
+    --color-9: #212529;  /* Negro */
+    
+    /* Variables para admin */
+    --admin-primary: #007bff;
+    --admin-success: #28a745;
+    --admin-danger: #dc3545;
+    --admin-warning: #ffc107;
+    --admin-info: #17a2b8;
+}
+
+/* Reset y base */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--color-1), var(--color-2));
+    line-height: 1.6;
+}
+
+/* ===============================================
+   LAYOUT PARA LOGIN CON SLIDER MEJORADO
+   =============================================== */
+
+/* Botón de regreso mejorado */
+.back-button {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(0, 123, 255, 0.2);
+    border-radius: 50px;
+    color: var(--admin-primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000;
+}
+
+.back-button:hover {
+    background: white;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 123, 255, 0.25);
+    color: var(--admin-primary);
+    text-decoration: none;
+    border-color: var(--admin-primary);
+}
+
+.back-arrow {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover .back-arrow {
+    transform: translateX(-4px);
+}
+
+/* Layout principal para login */
+.login-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+}
+
+.login-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1200px;
+    width: 100%;
+    min-height: 600px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    animation: fadeInUp 0.6s ease-out;
+}
+/* ===============================================
+   SLIDER MEJORADO Y MÁS GRANDE
+   =============================================== */
+
+.slider-section {
+    position: relative;
+    background: linear-gradient(135deg, var(--color-8), var(--color-9));
+    overflow: hidden;
+}
+
+.slider-container {
+    height: 100%;
+    position: relative;
+}
+
+.slider-wrapper {
+    height: 100%;
+    position: relative;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.slide.active {
+    opacity: 1;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.slide:hover img {
+    transform: scale(1.05);
+}
+
+/* Overlay para mejor legibilidad */
+.slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(0, 123, 255, 0.7),
+        rgba(102, 126, 234, 0.6),
+        rgba(118, 75, 162, 0.7)
+    );
+    z-index: 1;
+}
+
+.slide-content {
+    position: absolute;
+    bottom: 3rem;
+    left: 3rem;
+    right: 3rem;
+    color: white;
+    z-index: 2;
+    text-align: left;
+}
+
+.slide-content h3 {
+    font-size: 2.8rem;  /* Más grande */
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+}
+
+.slide-content p {
+    font-size: 1.3rem;  /* Más grande */
+    line-height: 1.6;
+    margin: 0;
+    opacity: 0.95;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-weight: 300;
+}
+
+/* Indicadores del slider mejorados */
+.slider-indicators {
+    position: absolute;
+    bottom: 2rem;
+    left: 3rem;
+    display: flex;
+    gap: 1rem;
+    z-index: 3;
+}
+
+.indicator {
+    width: 16px;  /* Más grandes */
+    height: 16px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.indicator::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background: white;
+    transform: scale(1.3);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.indicator.active::before {
+    background: var(--admin-primary);
+}
+
+.indicator:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.15);
+}
+
+/* ===============================================
+   SECCIÓN DEL FORMULARIO MEJORADA
+   =============================================== */
+
+.form-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 3rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 250, 0.95));
+}
+
+.card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    width: 100%;
+    max-width: 450px;
+    padding: 0;
+}
+
+/* Logo y título centrados */
+.card .text-center {
+    margin-bottom: 3rem;
+}
+
+.card .text-center img {
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.card .text-center img:hover {
+    transform: scale(1.05);
+}
+
+.card h3 {
+    color: var(--color-9);
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 2rem;
+    text-align: center;
+    margin: 1rem 0 0.5rem 0;
+    background: linear-gradient(135deg, var(--admin-primary), #667eea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.card p {
+    color: var(--color-6);
+    text-align: center;
+    font-weight: 500;
+    margin: 0.5rem 0;
+}
+
+.card small {
+    color: var(--color-5);
+    text-align: center;
+    display: block;
+}
+
+/* ===============================================
+   FORMULARIO MEJORADO
+   =============================================== */
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+}
+
+/* Alertas mejoradas */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.alert span {
+    font-size: 1.2rem;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+    box-shadow: 0 4px 15px rgba(21, 87, 36, 0.1);
+}
+
+.alert-error {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+    box-shadow: 0 4px 15px rgba(114, 28, 36, 0.1);
+}
+
+/* Input groups mejorados */
+.input-group {
+    position: relative;
+    margin-bottom: 1.8rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 1.2rem 1rem;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--color-3);
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: inherit;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.input-group input:focus {
+    background: white;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15), 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+    transform: translateY(-150%) scale(0.85);
+    color: var(--admin-primary);
+    background: white;
+    padding: 0 0.8rem;
+    font-weight: 600;
+}
+
+.input-group input:not(:placeholder-shown) {
+    background: white;
+}
+
+.input-group label {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-6);
+    font-weight: 500;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: transparent;
+}
+
+/* Botones mejorados */
+.btn-submit {
+    width: 100%;
+    padding: 1.2rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: white;
+    background: linear-gradient(135deg, var(--admin-primary), #667eea);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+    margin: 1rem 0;
+    font-family: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-submit:hover::before {
+    left: 100%;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #0056b3, #5a67d8);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-submit:active {
+    transform: translateY(-1px);
+}
+
+/* Divisor mejorado */
+.divider {
+    text-align: center;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-4), transparent);
+    z-index: 1;
+}
+
+.divider span {
+    background: white;
+    padding: 0 1.5rem;
+    color: var(--color-6);
+    font-size: 0.9rem;
+    font-weight: 500;
+    position: relative;
+    z-index: 2;
+}
+
+/* Botón de invitado mejorado */
+.btn-guest {
+    width: 100%;
+    padding: 1.2rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-8);
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+    border: 2px solid #ffc107;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-guest::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.btn-guest:hover::before {
+    left: 100%;
+}
+
+.btn-guest:hover {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+    border-color: #e0a800;
+}
+
+.guest-icon {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-guest:hover .guest-icon {
+    transform: scale(1.1);
+}
+
+/* Enlaces mejorados */
+.login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.login-link small {
+    color: var(--color-6);
+    font-size: 0.95rem;
+    display: block;
+    line-height: 1.5;
+}
+
+.login-link a {
+    color: var(--admin-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-left: 0.3rem;
+    position: relative;
+}
+
+.login-link a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--admin-primary);
+    transition: width 0.3s ease;
+}
+
+.login-link a:hover::after {
+    width: 100%;
+}
+
+.login-link a:hover {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+/* ===============================================
+   FOOTER MEJORADO
+   =============================================== */
+
+footer {
+    background: linear-gradient(135deg, var(--color-9), var(--color-8));
+    color: white;
+    text-align: center;
+    padding: 2rem;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* ===============================================
+   LAYOUT PARA PÁGINAS SIN SLIDER
+   =============================================== */
+
+main {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Card para páginas sin slider */
+main .card {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.6s ease-out;
+    width: 100%;
+    max-width: 500px;
+}
+
+/* ===============================================
+   ESTILOS ESPECÍFICOS PARA REGISTRO
+   =============================================== */
+
+/* Grid para nombre y apellido */
+.register-form .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Validación de contraseña */
+#passwordStrength {
+    margin-top: 0.8rem;
+}
+
+.strength-bar {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 0.5rem;
+}
+
+.strength-segment {
+    height: 4px;
+    flex: 1;
+    background: #e9ecef;
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.strength-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+#passwordMatch {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+/* Checkbox para términos */
+input[type="checkbox"] {
+    accent-color: var(--admin-primary);
+    transform: scale(1.2);
+    margin-right: 0.5rem;
+}
+
+/* ===============================================
+   DASHBOARD Y ADMIN STYLES
+   =============================================== */
+
+.admin-header {
+    background: white;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--admin-primary);
+}
+
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+}
+
+.admin-brand h1 {
+    margin: 0;
+    color: var(--admin-primary);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.admin-brand p {
+    margin: 0;
+    color: var(--color-6);
+    font-size: 0.9rem;
+}
+
+.admin-nav {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--color-7);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: var(--admin-primary);
+    color: white;
+    text-decoration: none;
+}
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--color-7);
+}
+
+.logout-btn {
+    background: var(--admin-danger);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.logout-btn:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+/* ===============================================
+   RESPONSIVE DESIGN MEJORADO
+   =============================================== */
+
+   @media (max-width: 1024px) {
+    .login-container {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        min-height: auto;
+    }
+    .slide-content h3 {
+        font-size: 2.4rem;
+    }
+    
+    .slide-content p {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .login-container {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+        min-height: auto;
+    }
+    
+    .slider-section {
+        display: none;
+    }
+    
+    .form-section {
+        padding: 3rem 2rem;
+    }
+    
+    .back-button {
+        top: 1.5rem;
+        left: 1.5rem;
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .admin-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .admin-nav {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-main, main {
+        padding: 1rem 0.5rem;
+    }
+    
+    .login-container {
+        margin: 0.5rem;
+        border-radius: 20px;
+    }
+    
+    .form-section {
+        padding: 2rem 1.5rem;
+    }
+    
+    .card, main .card {
+        padding: 2rem 1.5rem;
+        margin: 0;
+    }
+    
+    .card h3 {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .input-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .back-button {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin: 1rem;
+        align-self: flex-start;
+    }
+    
+    .register-form .input-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .admin-header {
+        padding: 1rem;
+    }
+    
+    .admin-brand {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .admin-nav {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card, main .card {
+        padding: 1.5rem 1rem;
+        border-radius: 15px;
+    }
+    
+    .card h3 {
+        font-size: 1.4rem;
+    }
+    
+    .input-group input {
+        padding: 1rem 0.8rem;
+        font-size: 0.95rem;
+    }
+    
+    .btn-submit, .btn-guest {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .slide-content h3 {
+        font-size: 2rem;
+    }
+    
+    .slide-content p {
+        font-size: 1rem;
+    }
+    
+    .admin-logo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .admin-brand h1 {
+        font-size: 1.4rem;
+    }
+}
+
+/* ===============================================
+   ANIMACIONES MEJORADAS
+   =============================================== */
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===============================================
+   ESTADOS DE LOADING Y DISABLED
+   =============================================== */
+
+.btn-submit:disabled,
+.btn-guest:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn-submit:disabled:hover,
+.btn-guest:disabled:hover {
+    transform: none !important;
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3) !important;
+}
+
+/* Input states */
+.input-group input:invalid:not(:placeholder-shown) {
+    border-color: var(--admin-danger);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+.input-group input:valid:not(:placeholder-shown) {
+    border-color: var(--admin-success);
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.15);
+}
+
+/* Focus visible para accesibilidad */
+.btn-submit:focus-visible,
+.btn-guest:focus-visible,
+.back-button:focus-visible {
+    outline: 3px solid rgba(0, 123, 255, 0.5);
+    outline-offset: 2px;
+}
+
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===============================================
+   UTILIDADES ADICIONALES
+   =============================================== */
+
+.text-center {
+    text-align: center;
+}
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+
+.d-none { display: none; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+
+/* Prevenir selección de texto en elementos interactivos */
+.back-button,
+.btn-submit,
+.btn-guest,
+.indicator {
+    user-select: none;
+}
+
+/* Mejorar rendimiento de animaciones */
+.slide,
+.indicator,
+.btn-submit,
+.btn-guest,
+.back-button {
+    will-change: transform;
+}

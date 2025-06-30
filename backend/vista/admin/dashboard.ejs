@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= titulo || 'Dashboard - DATA DREAM' %></title>
+    <link rel="stylesheet" href="/css/admin-dashboard.css">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-brand">
+                <img src="/favicon.png" alt="DATA DREAM" class="admin-logo">
+                <div>
+                    <h1>DATA DREAM</h1>
+                    <p>Panel de Administración</p>
+                </div>
+            </div>
+            
+            <div class="admin-nav">
+                <a href="/admin/dashboard" class="nav-link active">Dashboard</a>
+                <a href="http://localhost:5173" class="nav-link" target="_blank">Ver Tienda</a>
+            </div>
+            
+            <div class="admin-user">
+                <span>👤 <%= usuario.nombre %> <%= usuario.apellido %></span>
+                <form action="/admin/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="logout-btn">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1>¡Bienvenido, <%= usuario.nombre %>!</h1>
+        <p>Panel de control de DATA DREAM</p>
+    </div>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <div class="admin-container">
+            
+            <!-- Acción principal -->
+            <div class="main-action">
+                <div class="new-product-card">
+                    <div class="card-icon">
+                        <span class="action-icon">➕</span>
+                    </div>
+                    <div class="card-content">
+                        <h2>Agregar Nuevo Producto</h2>
+                        <p>Añade un nuevo producto a tu catálogo con toda la información necesaria</p>
+                        <a href="/admin/productos/nuevo" class="btn-primary-large">
+                            Crear Producto
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listado de Productos -->
+            <div class="productos-section">
+                <div class="productos-header">
+                    <h2>Productos</h2>
+                    <div class="productos-controls">
+                        <select class="filter-select" id="filtroCategoria">
+                            <option value="">Todas las categorías</option>
+                            <option value="ropa">Ropa</option>
+                            <option value="accesorios">Accesorios</option>
+                        </select>
+                        
+                        <select class="filter-select" id="filtroEstado">
+                            <option value="">Todos los estados</option>
+                            <option value="true">Activos</option>
+                            <option value="false">Inactivos</option>
+                        </select>
+                        
+                        <input type="text" class="search-input" id="buscarProducto" placeholder="Buscar productos...">
+                        
+                        <a href="/admin/productos/nuevo" class="btn-primary">
+                            ➕ Nuevo Producto
+                        </a>
+                    </div>
+                </div>
+
+                <div class="productos-table-container">
+                    <div id="loading-productos" class="loading-state" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <p>Cargando productos...</p>
+                    </div>
+
+                    <table class="productos-table" id="tabla-productos">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productos-tbody">
+                            <!-- Los productos se cargarán aquí -->
+                        </tbody>
+                    </table>
+
+                    <div id="empty-productos" class="empty-state" style="display: none;">
+                        <h3>No hay productos</h3>
+                        <p>No se encontraron productos con los filtros seleccionados.</p>
+                        <a href="/admin/productos/nuevo" class="btn-primary">Crear primer producto</a>
+                    </div>
+                </div>
+
+                <!-- Paginación -->
+                <div class="pagination" id="paginacion-container" style="display: none;">
+                    <div class="pagination-info" id="pagination-info">
+                        <!-- Info de paginación -->
+                    </div>
+                    <div class="pagination-controls" id="pagination-controls">
+                        <!-- Controles de paginación -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="admin-footer">
+        <p>&copy; 2025 DATA DREAM - Yamila Sueldo. Panel de Administración.</p>
+    </footer>
+
+    <script>
+        // Variables globales
+        let currentPage = 1;
+        const itemsPerPage =5;
+        let totalPages = 1;
+        let currentFilters = {
+            categoria: '',
+            estado: '',
+            busqueda: ''
+        };
+
+        // Elementos del DOM
+        const loadingElement = document.getElementById('loading-productos');
+        const tablaElement = document.getElementById('tabla-productos');
+        const tbodyElement = document.getElementById('productos-tbody');
+        const emptyElement = document.getElementById('empty-productos');
+        const paginacionContainer = document.getElementById('paginacion-container');
+        const paginationInfo = document.getElementById('pagination-info');
+        const paginationControls = document.getElementById('pagination-controls');
+
+        // Filtros
+        const filtroCategoria = document.getElementById('filtroCategoria');
+        const filtroEstado = document.getElementById('filtroEstado');
+        const buscarInput = document.getElementById('buscarProducto');
+
+        // Event listeners para filtros
+        filtroCategoria.addEventListener('change', () => {
+            console.log('🔍 Filtro categoría cambió a:', filtroCategoria.value);
+            currentFilters.categoria = filtroCategoria.value;
+            currentPage = 1;
+            cargarProductos();
+        });
+
+        filtroEstado.addEventListener('change', () => {
+            console.log('🔍 Filtro estado cambió a:', filtroEstado.value);
+            currentFilters.estado = filtroEstado.value;
+            currentPage = 1;
+            cargarProductos();
+        });
+
+        // Debounce para la búsqueda
+        let searchTimeout;
+        buscarInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                console.log('🔍 Búsqueda cambió a:', buscarInput.value);
+                currentFilters.busqueda = buscarInput.value;
+                currentPage = 1;
+                cargarProductos();
+            }, 500);
+        });
+
+        // Función para cargar productos
+        async function cargarProductos() {
+            console.log('📡 Cargando productos...');
+            console.log('📊 Filtros actuales:', currentFilters);
+            console.log('📄 Página actual:', currentPage);
+            
+            mostrarCargando(true);
+
+            try {
+                const params = new URLSearchParams({
+                    pagina: currentPage,
+                    limite: itemsPerPage
+                });
+
+                // 🔧 FIX: Corregir el parámetro de categoría
+                if (currentFilters.categoria) {
+                    params.append('categoria', currentFilters.categoria);
+                }
+                
+                // 🔧 FIX: Corregir el parámetro de estado activo
+                if (currentFilters.estado !== '') {
+                    // El backend espera que activo sea undefined para mostrar todos
+                    if (currentFilters.estado !== 'todos') {
+                        params.append('activo', currentFilters.estado);
+                    }
+                }
+                
+                // 🔧 FIX: Corregir el parámetro de búsqueda
+                if (currentFilters.busqueda) {
+                    params.append('busqueda', currentFilters.busqueda);
+                }
+
+                const url = `/api/productos?${params}`;
+                console.log('🌐 URL de la API:', url);
+
+                const response = await fetch(url);
+                console.log('📡 Response status:', response.status);
+                
+                const data = await response.json();
+                console.log('📦 Datos recibidos:', data);
+
+                if (data.exito) {
+                    mostrarProductos(data.datos.productos);
+                    mostrarPaginacion(data.datos.paginacion);
+                } else {
+                    console.error('❌ Error en respuesta:', data.mensaje);
+                    mostrarError(data.mensaje);
+                }
+            } catch (error) {
+                console.error('❌ Error al cargar productos:', error);
+                mostrarError('Error de conexión al cargar productos');
+            } finally {
+                mostrarCargando(false);
+            }
+        }
+
+        // Función para mostrar estado de carga
+        function mostrarCargando(show) {
+            loadingElement.style.display = show ? 'block' : 'none';
+            tablaElement.style.display = show ? 'none' : 'table';
+            emptyElement.style.display = 'none';
+            paginacionContainer.style.display = show ? 'none' : 'flex';
+        }
+
+        // Función para mostrar productos en la tabla
+        function mostrarProductos(productos) {
+            console.log('📋 Mostrando productos:', productos.length);
+            
+            if (productos.length === 0) {
+                tablaElement.style.display = 'none';
+                emptyElement.style.display = 'block';
+                paginacionContainer.style.display = 'none';
+                return;
+            }
+
+            tbodyElement.innerHTML = productos.map(producto => `
+                <tr>
+                    <td>
+                        <img src="${producto.imagen || '/img/default-product.png'}" 
+                             alt="${producto.nombre}" 
+                             class="producto-imagen"
+                             onerror="this.src='/img/default-product.png'">
+                    </td>
+                    <td>
+                        <div class="producto-nombre">${producto.nombre}</div>
+                        ${producto.descripcion ? `<small style="color: var(--gray-text);">${producto.descripcion.substring(0, 50)}...</small>` : ''}
+                    </td>
+                    <td>
+                        <span class="producto-categoria">${producto.categoria}</span>
+                    </td>
+                    <td>
+                        <span class="producto-precio">${Number(producto.precio).toLocaleString('es-AR')}</span>
+                    </td>
+                    <td class="producto-stock">
+                        <span class="stock-badge ${getStockClass(producto.stock)}">
+                            ${producto.stock} unidades
+                        </span>
+                    </td>
+                    <td class="producto-estado">
+                        <span class="estado-badge ${producto.activo ? 'estado-activo' : 'estado-inactivo'}">
+                            ${producto.activo ? 'Activo' : 'Inactivo'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="producto-acciones">
+                            <a href="/admin/productos/${producto.id}/editar" class="btn-secondary">
+                                ✏️ Editar
+                            </a>
+                            <button class="btn-estado-${producto.id} ${producto.activo ? 'btn-danger' : 'btn-success'}" 
+                                    data-producto-id="${producto.id}" 
+                                    data-estado-actual="${producto.activo}">
+                                ${producto.activo ? '🗑️ Desactivar' : '✅ Activar'}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Agregar event listeners a los botones de estado
+            productos.forEach(producto => {
+                const btn = document.querySelector(`.btn-estado-${producto.id}`);
+                if (btn) {
+                    btn.addEventListener('click', function() {
+                        const nuevoEstado = !producto.activo;
+                        cambiarEstado(producto.id, nuevoEstado);
+                    });
+                }
+            });
+
+            tablaElement.style.display = 'table';
+            emptyElement.style.display = 'none';
+        }
+
+        // Función para obtener clase CSS según el stock
+        function getStockClass(stock) {
+            if (stock >= 20) return 'stock-high';
+            if (stock >= 5) return 'stock-medium';
+            return 'stock-low';
+        }
+
+        // 🔧 FIX: Función mejorada para mostrar paginación
+        function mostrarPaginacion(paginacion) {
+            console.log('📄 Configurando paginación:', paginacion);
+            
+            if (!paginacion || paginacion.totalPaginas <= 1) {
+                paginacionContainer.style.display = 'none';
+                return;
+            }
+
+            totalPages = paginacion.totalPaginas;
+            currentPage = paginacion.paginaActual;
+
+            // Información de paginación
+            const inicio = ((currentPage - 1) * itemsPerPage) + 1;
+            const fin = Math.min(currentPage * itemsPerPage, paginacion.totalElementos);
+            
+            paginationInfo.textContent = 
+                `Mostrando ${inicio} - ${fin} de ${paginacion.totalElementos} productos`;
+
+            // Controles de paginación
+            let controls = '';
+
+            // Botón anterior
+            if (paginacion.tieneAnterior) {
+                controls += `
+                    <button class="pagination-btn btn-anterior" data-pagina="${currentPage - 1}">
+                        ← Anterior
+                    </button>
+                `;
+            } else {
+                controls += `
+                    <button class="pagination-btn disabled" disabled>
+                        ← Anterior
+                    </button>
+                `;
+            }
+
+            // Números de página (simplificado)
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    controls += `
+                        <button class="pagination-btn active">
+                            ${i}
+                        </button>
+                    `;
+                } else {
+                    controls += `
+                        <button class="pagination-btn btn-pagina" data-pagina="${i}">
+                            ${i}
+                        </button>
+                    `;
+                }
+            }
+
+            // Botón siguiente
+            if (paginacion.tieneSiguiente) {
+                controls += `
+                    <button class="pagination-btn btn-siguiente" data-pagina="${currentPage + 1}">
+                        Siguiente →
+                    </button>
+                `;
+            } else {
+                controls += `
+                    <button class="pagination-btn disabled" disabled>
+                        Siguiente →
+                    </button>
+                `;
+            }
+
+            paginationControls.innerHTML = controls;
+
+            // Agregar event listeners a los botones de paginación
+            document.querySelectorAll('.btn-pagina, .btn-anterior, .btn-siguiente').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const nuevaPagina = parseInt(this.dataset.pagina);
+                    cambiarPagina(nuevaPagina);
+                });
+            });
+
+            paginacionContainer.style.display = 'flex';
+        }
+
+        // 🔧 FIX: Función mejorada para cambiar página
+        function cambiarPagina(nuevaPagina) {
+            console.log('📄 Cambiando a página:', nuevaPagina);
+            
+            if (nuevaPagina >= 1 && nuevaPagina <= totalPages && nuevaPagina !== currentPage) {
+                currentPage = nuevaPagina;
+                cargarProductos();
+            } else {
+                console.log('❌ Página inválida:', nuevaPagina);
+            }
+        }
+
+        // 🔧 FIX: Función corregida para cambiar estado del producto
+        async function cambiarEstado(productoId, nuevoEstado) {
+            console.log('🔄 Cambiando estado del producto:', productoId, 'a:', nuevoEstado);
+            
+            const accion = nuevoEstado ? 'activar' : 'desactivar';
+            
+            if (!confirm(`¿Estás seguro de que deseas ${accion} este producto?`)) {
+                return;
+            }
+
+            try {
+                // ✅ Usar el endpoint correcto que existe en tu backend
+                const response = await fetch(`/api/productos/${productoId}/alternar`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                    // No necesitas body porque alternar() cambia automáticamente el estado
+                });
+
+                console.log('📡 Response status cambio estado:', response.status);
+                const data = await response.json();
+                console.log('📦 Respuesta cambio estado:', data);
+
+                if (data.exito) {
+                    cargarProductos(); // Recargar la tabla
+                    alert(data.mensaje); // Usar el mensaje del servidor
+                } else {
+                    alert('Error: ' + data.mensaje);
+                }
+            } catch (error) {
+                console.error('❌ Error al cambiar estado:', error);
+                alert('Error de conexión al cambiar el estado del producto');
+            }
+        }
+
+        // Función para mostrar errores
+        function mostrarError(mensaje) {
+            console.error('❌ Mostrando error:', mensaje);
+            
+            tbodyElement.innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--error); padding: 2rem;">
+                        <strong>Error:</strong> ${mensaje}
+                        <br><br>
+                        <button onclick="cargarProductos()" class="btn-primary">Reintentar</button>
+                    </td>
+                </tr>
+            `;
+            paginacionContainer.style.display = 'none';
+        }
+
+        // Cargar productos al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Iniciando dashboard...');
+            cargarProductos();
+        });
+    </script>
+</body>
+</html>

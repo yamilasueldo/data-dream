@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>DATA DREAM - Sistema de Autoservicio</title>
+    <meta name="description" content="Sistema de autoservicio DATA DREAM - Yamila Sueldo" />
+    <meta name="author" content="Yamila Sueldo" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://datadream.com/" />
+    <meta property="og:title" content="DATA DREAM - Sistema de Autoservicio" />
+    <meta property="og:description" content="Descubre nuestra colección exclusiva de ropa y accesorios" />
+    <meta property="og:image" content="/favicon.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://datadream.com/" />
+    <meta property="twitter:title" content="DATA DREAM - Sistema de Autoservicio" />
+    <meta property="twitter:description" content="Descubre nuestra colección exclusiva de ropa y accesorios" />
+    <meta property="twitter:image" content="/favicon.png" />
+    
+    <!-- PWA -->
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    
+    <!-- Prevent FOUC (Flash of Unstyled Content) -->
+    <style>
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background-color: #ffffff;
+        transition: background-color 0.3s ease;
+      }
+      
+      [data-theme="dark"] body {
+        background-color: #0f172a;
+        color: #f8fafc;
+      }
+      
+      /* Loading spinner inicial */
+      .loading-initial {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+      }
+      
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #e2e8f0;
+        border-top: 3px solid #2563eb;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      /* Ocultar loading cuando React se monta */
+      #root:not(:empty) + .loading-initial {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <!-- Loading inicial mientras carga React -->
+    <div class="loading-initial">
+      <div class="spinner"></div>
+    </div>
+    
+    <!-- Scripts -->
+    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Fallback para navegadores sin JavaScript -->
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+        <h1>DATA DREAM</h1>
+        <p>Este sitio requiere JavaScript para funcionar correctamente.</p>
+        <p>Por favor, habilita JavaScript en tu navegador.</p>
+      </div>
+    </noscript>
+  </body>
+</html>

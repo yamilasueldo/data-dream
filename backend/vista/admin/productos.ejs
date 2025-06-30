@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles_admin.css" />
+    <title><%= titulo || 'Formulario Producto - DATA DREAM' %></title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+    <!-- Navbar Admin -->
+    <nav class="admin-navbar">
+        <div class="admin-brand">
+            <img src="/favicon.png" alt="DATA DREAM" class="admin-logo">
+            <div>
+                <h1>DATA DREAM</h1>
+                <p>Panel de Administración</p>
+            </div>
+        </div>
+        <div class="admin-user">
+            <span>👤 <%= usuario.nombre %> <%= usuario.apellido %></span>
+            <a href="/admin/dashboard" class="back-btn">← Volver al Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Formulario -->
+    <div class="form-container">
+        <div class="form-card">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #343a40;">
+                <%= accion === 'crear' ? '➕ Nuevo Producto' : '✏️ Editar Producto' %>
+            </h2>
+
+            <!-- Mostrar errores si existen -->
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-error">
+                    ❌ <%= error %>
+                </div>
+            <% } %>
+            
+            <% if (typeof errores !== 'undefined' && errores && errores.length > 0) { %>
+                <div class="alert alert-error">
+                    <strong>Errores de validación:</strong>
+                    <ul style="margin: 0.5rem 0 0 0; padding-left: 1.5rem;">
+                        <% errores.forEach(function(error) { %>
+                            <li><%= error.mensaje || error.msg %></li>
+                        <% }); %>
+                    </ul>
+                </div>
+            <% } %>
+
+            <form method="POST" 
+                  action="/admin/productos<%= producto ? '/' + producto.id : '' %>"
+                  enctype="multipart/form-data"
+                  id="productoForm">
+
+                <!-- Información básica -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nombre">Nombre del Producto *</label>
+                        <input type="text" 
+                               id="nombre" 
+                               name="nombre" 
+                               required
+                               maxlength="100"
+                               value="<%= producto ? producto.nombre : '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="categoria">Categoría *</label>
+                        <select id="categoria" name="categoria" required>
+                            <option value="">Seleccionar categoría</option>
+                            <% categorias.forEach(function(cat) { %>
+                                <option value="<%= cat.valor %>" 
+                                        <%= producto && producto.categoria === cat.valor ? 'selected' : '' %>>
+                                    <%= cat.texto %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" 
+                              name="descripcion" 
+                              maxlength="500"
+                              rows="3"
+                              placeholder="Descripción del producto..."><%= producto ? producto.descripcion || '' : '' %></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="precio">Precio ($) *</label>
+                        <input type="number" 
+                               id="precio" 
+                               name="precio" 
+                               required
+                               min="0"
+                               step="0.01"
+                               placeholder="0.00"
+                               value="<%= producto ? producto.precio : '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stock">Stock (unidades) *</label>
+                        <input type="number" 
+                               id="stock" 
+                               name="stock" 
+                               required
+                               min="0"
+                               step="1"
+                               placeholder="0"
+                               value="<%= producto ? producto.stock : '' %>">
+                    </div>
+                </div>
+
+                <!-- Detalles opcionales -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="color">Color</label>
+                        <input type="text" 
+                               id="color" 
+                               name="color" 
+                               maxlength="50"
+                               placeholder="Color del producto"
+                               value="<%= producto ? producto.color || '' : '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="talla">Talla/Tamaño</label>
+                        <input type="text" 
+                               id="talla" 
+                               name="talla" 
+                               maxlength="20"
+                               placeholder="Ej: M, L, XL"
+                               value="<%= producto ? producto.talla || '' : '' %>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="material">Material</label>
+                    <input type="text" 
+                           id="material" 
+                           name="material" 
+                           maxlength="100"
+                           placeholder="Material del producto"
+                           value="<%= producto ? producto.material || '' : '' %>">
+                </div>
+
+                <!-- Imagen -->
+                <div class="form-group">
+                    <label for="imagen">Imagen del Producto</label>
+                    <% if (producto && producto.imagen) { %>
+                        <div style="margin-bottom: 1rem; text-align: center;">
+                            <p style="color: #6c757d; margin-bottom: 0.5rem;">Imagen actual:</p>
+                            <img src="<%= producto.imagen %>" 
+                                 alt="<%= producto.nombre %>" 
+                                 style="max-width: 200px; max-height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid #ddd;"
+                                 onerror="this.src='/img/default-product.png'">
+                        </div>
+                    <% } %>
+                    <input type="file" 
+                           id="imagen" 
+                           name="imagen" 
+                           accept="image/*">
+                    <small style="color: #6c757d; font-size: 0.9rem; display: block; margin-top: 0.5rem;">
+                        Formatos: JPG, PNG, GIF, WEBP. Máximo 5MB.
+                        <% if (producto) { %>
+                            <br><strong>Deja vacío para mantener la imagen actual.</strong>
+                        <% } %>
+                    </small>
+                </div>
+
+                <!-- Estados (solo para editar) -->
+                <% if (producto) { %>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" 
+                                   name="activo" 
+                                   value="true" 
+                                   <%= producto.activo ? 'checked' : '' %>>
+                            Producto activo (visible en la tienda)
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" 
+                                   name="destacado" 
+                                   value="true" 
+                                   <%= producto.destacado ? 'checked' : '' %>>
+                            Producto destacado
+                        </label>
+                    </div>
+                </div>
+                <% } %>
+
+                <!-- Botones de acción -->
+                <div class="form-actions">
+                    <a href="/admin/dashboard" class="btn-secondary">
+                        ❌ Cancelar
+                    </a>
+                    
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <%= accion === 'crear' ? '✅ Crear Producto' : '💾 Guardar Cambios' %>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('productoForm');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Validación del formulario
+            form.addEventListener('submit', function(e) {
+                const nombre = document.getElementById('nombre').value.trim();
+                const categoria = document.getElementById('categoria').value;
+                const precio = document.getElementById('precio').value;
+                const stock = document.getElementById('stock').value;
+
+                console.log('🔍 Validando formulario...');
+                console.log('📊 Valores:', { nombre, categoria, precio, stock });
+
+                // Validar campos obligatorios
+                if (!nombre) {
+                    alert('El nombre del producto es requerido');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (!categoria) {
+                    alert('Debe seleccionar una categoría');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (!precio || precio === '' || parseFloat(precio) < 0) {
+                    alert('El precio debe ser un número válido mayor o igual a 0');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (!stock || stock === '' || parseInt(stock) < 0) {
+                    alert('El stock debe ser un número entero mayor o igual a 0');
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Mostrar estado de carga
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ Procesando...';
+                
+                console.log('✅ Formulario válido, enviando...');
+                return true;
+            });
+
+            // Auto-focus en el primer campo
+            document.getElementById('nombre').focus();
+        });
+    </script>
+
+    <style>
+        .admin-navbar {
+            background: #343a40;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .admin-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+        
+        .admin-brand h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .admin-brand p {
+            margin: 0;
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+        
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .form-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #0056b3;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .btn-primary:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .admin-navbar {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .form-container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</body>
+</html>

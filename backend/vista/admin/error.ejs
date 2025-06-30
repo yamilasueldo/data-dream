@@ -1,0 +1,92 @@
+<!-- Vista/admin/error.ejs -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles_admin.css" />
+    <link rel="stylesheet" href="/css/admin-dashboard.css" />
+    <title>Error - DATA DREAM</title>
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- Header solo si hay usuario logueado -->
+    <% if (typeof usuario !== 'undefined' && usuario) { %>
+    <header class="admin-header">
+        <div class="header-container">
+            <div class="header-left">
+                <h1 class="logo">DATA DREAM</h1>
+                <span class="logo-subtitle">Panel Administrador</span>
+            </div>
+            <nav class="header-nav">
+                <a href="/admin/dashboard" class="nav-link">Dashboard</a>
+                <a href="/admin/productos/nuevo" class="nav-link">Nuevo Producto</a>
+                <a href="/" class="nav-link" target="_blank">Ver Tienda</a>
+            </nav>
+            <div class="header-right">
+                <span class="user-info">👤 <%= usuario.nombre %></span>
+                <a href="/admin/logout" class="btn-logout">Salir</a>
+            </div>
+        </div>
+    </header>
+    <% } %>
+
+    <!-- Contenido principal -->
+    <main class="<%= typeof usuario !== 'undefined' && usuario ? 'main-with-header' : 'main-full' %>">
+        <div style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+            <div class="card" style="text-align: center; max-width: 500px; margin: 2rem;">
+                <h1 style="color: var(--color-9); font-size: 3rem; margin-bottom: 1rem;">
+                    <%= error.status || 500 %>
+                </h1>
+                
+                <h2 style="color: var(--color-8); margin-bottom: 1.5rem;">
+                    <% if (error.status === 404) { %>
+                        Página no encontrada
+                    <% } else { %>
+                        Error del servidor
+                    <% } %>
+                </h2>
+                
+                <p style="color: var(--color-6); margin-bottom: 2rem; line-height: 1.6;">
+                    <%= error.message || 'Ha ocurrido un error inesperado' %>
+                </p>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <% if (usuario) { %>
+                        <a href="/admin/dashboard" class="btn-primary">
+                            📊 Ir al Dashboard
+                        </a>
+                    <% } %>
+                    
+                    <a href="/Vista/admin/login/index.html" class="btn-secondary">
+                        🔑 Ir al Login
+                    </a>
+                    
+                    <a href="/" class="btn-secondary">
+                        🏠 Ir al Inicio
+                    </a>
+                </div>
+                
+                <% if (process.env.NODE_ENV === 'development' && error.stack) { %>
+                    <details style="margin-top: 2rem; text-align: left;">
+                        <summary style="cursor: pointer; color: var(--color-6);">
+                            Detalles técnicos (desarrollo)
+                        </summary>
+                        <pre style="background: var(--color-1); padding: 1rem; border-radius: 8px; overflow: auto; font-size: 0.8rem; margin-top: 1rem;">
+<%= error.stack %>
+                        </pre>
+                    </details>
+                <% } %>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 DATA DREAM - Yamila Sueldo . Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/admin-common.js"></script>
+</body>
+</html>

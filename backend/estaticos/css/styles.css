@@ -1,0 +1,175 @@
+@layer reset, base, layout, components;
+
+@layer reset {
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Deshabilitar ajustes de textos en navegadores */
+    html {
+        -moz-text-size-adjust: none;
+        -webkit-text-size-adjust: none;
+        text-size-adjust: none
+    }
+
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p
+    {
+        margin: 0;
+    }
+
+    [role="list"] {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        min-block-size: 100vh;
+        line-height: 1.4;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    button,
+    input,
+    label {
+        line-height: 1.1;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        text-wrap: pretty;
+        text-wrap: balance;
+    }
+    
+    p,
+    li {
+        text-wrap: pretty;
+    }
+
+    img {
+        max-inline-size: 100%;
+        block-size: auto;
+    }
+
+    input,
+    button,
+    textarea,
+    select {
+        font: inherit;
+    }
+}
+
+@layer base {
+    :root {
+        /* colors */
+        --color-0: #ffffff;
+        --color-1: #f8f9fa;  /* Gris muy claro */
+        --color-2: #e9ecef;  /* Gris claro */
+        --color-3: #dee2e6;  /* Gris medio claro */
+        --color-4: #ced4da;  /* Gris medio */
+        --color-5: #adb5bd;  /* Gris */
+        --color-6: #6c757d;  /* Gris oscuro */
+        --color-7: #495057;  /* Gris muy oscuro */
+        --color-8: #343a40;  /* Negro grisáceo */
+        --color-9: #212529;  /* Negro */
+        --color-10: hsl(9, 8%, 16%);
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--color-8);
+            }
+
+            .cart-container, .ticket-container {
+                background-color: var(--color-6) !important;
+                color: var(--color-1) !important;
+            }
+
+            .empty-cart {
+                color: var(--color-1) !important;
+            }
+
+            .empty-cart:hover {
+                color: var(--color-9) !important;
+            }
+        }
+
+        /* typography */
+        --ff-sans: "Fira Sans", sans-serif;
+        --ff-sans-heading: "Outfit", sans-serif;
+        
+        /* border-radius */
+        --border-radius-s: 0.25rem;
+        --border-radius-m: 0.5rem;
+        --border-radius-l: 1rem;
+        --border-radius-full: 9999px;
+
+        /* font-sizes */
+        --fs-sm: 0.875rem;
+        --fs-base: 1rem;
+        --fs-md: 1.125rem;
+        --fs-lg: 1.25rem;
+        --fs-xl: 1.5rem;
+        --fs-xxl: 2rem;
+
+        @media (min-width: 760px) {
+            --fs-md: 1.25rem;
+            --fs-lg: 1.5rem;
+            --fs-xl: 2rem;
+            --fs-xxl: 3rem;
+        }
+    }
+
+    html{
+        font-family: var(--ff-sans);
+        line-height: 1.6;
+        scroll-padding: 2rem;
+    }
+
+    body {
+        font-size: var(--fs-base);
+        background: linear-gradient(135deg, var(--color-gris-2), var(--color-gris-3));
+        min-height: 100vh;
+    }
+
+    h1 {
+        font-size: var(--fs-xxl);
+    }
+
+    h1, 
+    h2, 
+    h3, 
+    h4{
+        font-family: var(--ff-sans-heading);
+    }
+
+    a {
+        text-decoration: none;
+        text-underline-offset: 2px;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .error-text {
+        color: red;
+        font-size: var(--fs-sm);
+        display: block;
+    }
+}

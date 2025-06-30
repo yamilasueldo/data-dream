@@ -1,0 +1,120 @@
+[
+  {
+    "id": 1,
+    "nombre": "Remera 1",
+    "categoria": "ropa",
+    "precio": 15000,
+    "imagen": "../../../Estaticos/img/img1.png",
+    "cantidad": 1,
+    "estado": true
+  },
+  {
+    "id": 2,
+    "nombre": "Remera 2",
+    "categoria": "ropa",
+    "precio": 10000,
+    "imagen": "../../../Estaticos/img/img2.png",
+    "cantidad": 1,
+    "estado": true
+  },
+  {
+    "id": 3,
+    "nombre": "Buzo 1",
+    "categoria": "ropa",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img3.png",
+    "cantidad": 1,
+    "estado": true
+
+  },
+  {
+    "id": 4,
+    "nombre": "Remera 3",
+    "categoria": "ropa",
+    "precio": 12000,
+    "imagen": "../../../Estaticos/img/img4.png",
+    "cantidad": 1,
+    "estado": true
+  },
+  {
+    "id": 5,
+    "nombre": "Gorra 1",
+    "categoria": "accesorios",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img-05.jpg",
+    "cantidad": 1,
+    "estado": true
+  },
+  {
+    "id": 6,
+    "nombre": "Gorra 2",
+    "categoria": "accesorios",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img-06.jpg",
+    "cantidad": 1,
+    "estado": false
+  },
+  {
+    "id": 7,
+    "nombre": "Gorra 3",
+    "categoria": "accesorios",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img-07.jpg",
+    "cantidad": 1,
+    "estado": false
+  },
+  {
+    "id": 8,
+    "nombre": "Buzo 2",
+    "categoria": "ropa",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img5.png",
+    "cantidad": 1,
+    "estado": true
+  },
+  {
+    "id": 9,
+    "nombre": "Billetera 1",
+    "categoria": "accesorios",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img-08.jpg",
+    "cantidad": 1,
+    "estado": true
+  },
+  {
+    "id": 10,
+    "nombre": "Billetera 2",
+    "categoria": "accesorios",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img-09.jpg",
+    "cantidad": 1,
+    "estado": true
+  },
+    {
+    "id": 11,
+    "nombre": "Billetera 2",
+    "categoria": "accesorios",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img-09.jpg",
+    "cantidad": 1,
+    "estado": true
+  },
+    {
+    "id": 12,
+    "nombre": "Billetera 2",
+    "categoria": "accesorios",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img-09.jpg",
+    "cantidad": 1,
+    "estado": true
+  },
+    {
+    "id": 13,
+    "nombre": "Billetera 2",
+    "categoria": "accesorios",
+    "precio": 16000,
+    "imagen": "../../../Estaticos/img/img-09.jpg",
+    "cantidad": 1,
+    "estado": true
+  }
+]

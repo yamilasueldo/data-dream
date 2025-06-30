@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/styles_admin.css" />
+  <title><%= titulo || 'Iniciar Sesión - DATA DREAM' %></title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+  <a href="/" class="back-button">
+    <span class="back-arrow">←</span>
+    <span class="back-text">Volver</span>
+  </a>
+
+  <main class="login-main">
+    <div class="login-container">
+      <!-- Slider de imágenes -->
+      <div class="slider-section">
+        <div class="slider-container">
+          <div class="slider-wrapper">
+            <div class="slide active">
+              <img src="/img/home/img_home1.png" alt="Imagen 1" />
+              <div class="slide-content">
+                <h3>Bienvenido a DATA DREAM</h3>
+                <p>Administra tu tienda online de manera eficiente</p>
+              </div>
+            </div>
+            <div class="slide">
+              <img src="/img/home/img_home2.png" alt="Imagen 2" />
+              <div class="slide-content">
+                <h3>Gestiona tus productos</h3>
+                <p>Control total sobre tu inventario</p>
+              </div>
+            </div>
+            <div class="slide">
+              <img src="/img/home/img_home3.png" alt="Imagen 3" />
+              <div class="slide-content">
+                <h3>Maneja tu stock</h3>
+                <p>Controla tu inventario de manera eficiente</p>
+              </div>
+            </div>
+            <div class="slide">
+              <img src="/img/home/img_home4.png" alt="Imagen 4" />
+              <div class="slide-content">
+                <h3>Aumenta tus ventas</h3>
+                <p>Optimiza tu tienda para maximizar tus ingresos</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Indicadores -->
+          <div class="slider-indicators">
+            <span class="indicator active" data-slide="0"></span>
+            <span class="indicator" data-slide="1"></span>
+            <span class="indicator" data-slide="2"></span>
+            <span class="indicator" data-slide="3"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de login -->
+      <div class="form-section">
+        <div class="card">
+          <!-- Logo y título -->
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="/favicon.png" alt="DATA DREAM Logo" style="width: 60px; height: 60px; margin-bottom: 1rem; border-radius: 8px;">
+            <h3>DATA DREAM</h3>
+            <p style="color: #6c757d; margin: 0.5rem 0;">Panel de Administración</p>
+            <small style="color: #999;">Yamila Sueldo</small>
+          </div>
+          
+          <!-- Contenedor para mensajes -->
+          <div id="messages">
+            <% if (typeof error !== 'undefined' && error) { %>
+              <div class="alert alert-error">
+                <span>❌</span>
+                <p><%= error %></p>
+              </div>
+            <% } %>
+            
+            <% if (typeof success !== 'undefined' && success) { %>
+              <div class="alert alert-success">
+                <span>✅</span>
+                <p><%= success %></p>
+              </div>
+            <% } %>
+          </div>
+          
+          <form action="/admin/login" method="POST" id="loginForm">
+            <div class="input-group">
+              <input type="email" id="email" name="email" placeholder=" " required />
+              <label for="email">Correo electrónico</label>
+            </div>
+
+            <div class="input-group">
+              <input type="password" id="password" name="password" placeholder=" " required />
+              <label for="password">Contraseña</label>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnLogin">
+              <span id="loginText">Ingresar</span>
+              <span id="loginSpinner" style="display: none;">🔄 Verificando...</span>
+            </button>
+
+            <div class="divider">
+              <span>O ingresa como</span>
+            </div>
+
+            <button type="button" class="btn-guest" id="btnAccesoRapido">
+              <span class="guest-icon">👤</span>
+              Acceso Rápido (Demo)
+            </button>
+
+            <div class="login-link">
+              <small>¿No tienes cuenta? <a href="/admin/register">Regístrate aquí</a></small>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 DATA DREAM - Yamila Sueldo - Todos los derechos reservados.</p>
+  </footer>
+  
+  <script>
+    // Slider functionality
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const indicators = document.querySelectorAll('.indicator');
+    const totalSlides = slides.length;
+
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      indicators.forEach(indicator => indicator.classList.remove('active'));
+      
+      slides[index].classList.add('active');
+      indicators[index].classList.add('active');
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      showSlide(currentSlide);
+    }
+
+    // Auto-slide cada 4 segundos
+    setInterval(nextSlide, 4000);
+
+    // Navegación manual por indicadores
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        currentSlide = index;
+        showSlide(currentSlide);
+      });
+    });
+
+    // Funcionalidad del formulario
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const btnLogin = document.getElementById('btnLogin');
+      const loginText = document.getElementById('loginText');
+      const loginSpinner = document.getElementById('loginSpinner');
+      const btnAccesoRapido = document.getElementById('btnAccesoRapido');
+
+      // Manejo del formulario de login
+      loginForm.addEventListener('submit', function(e) {
+        btnLogin.disabled = true;
+        loginText.style.display = 'none';
+        loginSpinner.style.display = 'inline';
+      });
+
+      // Botón de acceso rápido (autocompletar para demo)
+      btnAccesoRapido.addEventListener('click', function() {
+        document.getElementById('email').value = 'admin@datadream.com';
+        document.getElementById('password').value = 'admin123';
+        
+        // Efecto visual
+        this.innerHTML = '<span class="guest-icon">✓</span> Datos completados';
+        this.style.background = '#28a745';
+        this.style.color = 'white';
+        
+        setTimeout(() => {
+          this.innerHTML = '<span class="guest-icon">👤</span> Acceso Rápido (Demo)';
+          this.style.background = '';
+          this.style.color = '';
+        }, 2000);
+      });
+
+      // Auto-ocultar mensajes después de 5 segundos
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        setTimeout(() => {
+          alert.style.opacity = '0';
+          alert.style.transform = 'translateY(-10px)';
+          setTimeout(() => alert.remove(), 300);
+        }, 5000);
+      });
+    });
+  </script>
+
+  <style>
+    /* Estilos específicos para el login */
+    .login-main {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .slider-section {
+      position: relative;
+    }
+
+    .slider-container {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .slider-wrapper {
+      position: relative;
+      height: 500px;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .slide-content {
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      right: 30px;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+    }
+
+    .slide-content h3 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .slide-content p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    .slider-indicators {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .indicator.active {
+      background-color: white;
+      transform: scale(1.2);
+    }
+
+    .form-section {
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .alert {
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+    }
+
+    .alert-success {
+      background: #efe;
+      color: #363;
+      border: 1px solid #cfc;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e1e1e1;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #fff;
+    }
+
+    .input-group input:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 20px;
+      top: 15px;
+      color: #999;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .input-group input:focus + label,
+    .input-group input:not(:placeholder-shown) + label {
+      top: -10px;
+      left: 15px;
+      font-size: 12px;
+      color: #007bff;
+      background: white;
+      padding: 0 5px;
+    }
+
+    .btn-submit, .btn-guest {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .btn-submit {
+      background: #007bff;
+      color: white;
+    }
+
+    .btn-submit:hover {
+      background: #0056b3;
+    }
+
+    .btn-guest {
+      background: #f8f9fa;
+      color: #333;
+      border: 2px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-guest:hover {
+      background: #e9ecef;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      position: relative;
+      color: #666;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #ddd;
+    }
+
+    .divider span {
+      background: white;
+      padding: 0 15px;
+      position: relative;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .login-link a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      background: #f8f9fa;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.9);
+      border: 2px solid #007bff;
+      border-radius: 25px;
+      text-decoration: none;
+      color: #007bff;
+      font-weight: 500;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .back-button:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .login-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .slider-section {
+        display: none;
+      }
+
+      .card {
+        padding: 30px 20px;
+      }
+
+      .back-button {
+        position: static;
+        margin: 20px auto;
+        width: fit-content;
+        display: flex;
+      }
+    }
+  </style>
+</body>
+</html>
