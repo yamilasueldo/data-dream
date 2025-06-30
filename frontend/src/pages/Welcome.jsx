@@ -35,7 +35,7 @@ export const Welcome = () => {
     <div className="welcome-page">
       <div className="welcome-container">
         <div className="welcome-header">
-          <img src="/public/images/favicon.png" alt="DATA DREAM" className="logo-large" />
+          <img src="/images/favicon.png" alt="DATA DREAM" className="logo-large" />
           <h1>DATA DREAM</h1>
           <p className="subtitle">Yamila Sueldo</p>
         </div>

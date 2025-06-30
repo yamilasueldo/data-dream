@@ -30,60 +30,40 @@ export const Ticket = () => {
 
   const handleDownloadPDF = async () => {
     if (!ticketRef.current || isGeneratingPDF) return
-
+  
     try {
       setIsGeneratingPDF(true)
-      
-      // Esperar un poco para asegurar que el DOM esté completamente renderizado
-      await new Promise(resolve => setTimeout(resolve, 500))
-
-      // Configuración mejorada para html2canvas
+  
+      // Esperar al siguiente frame y breve delay
+      await new Promise(resolve => requestAnimationFrame(resolve))
+      await new Promise(resolve => setTimeout(resolve, 300))
+  
+      console.log('ticketRef:', ticketRef.current)
+  
       const canvas = await html2canvas(ticketRef.current, {
         scale: 2,
         backgroundColor: '#ffffff',
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        width: ticketRef.current.scrollWidth,
-        height: ticketRef.current.scrollHeight,
-        windowWidth: ticketRef.current.scrollWidth,
-        windowHeight: ticketRef.current.scrollHeight
+        useCORS: true
       })
-
-      // Crear PDF con dimensiones apropiadas
+  
       const imgData = canvas.toDataURL('image/png', 1.0)
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
         format: 'a4'
       })
-
-      // Calcular dimensiones para que quepa en A4
-      const imgWidth = 190 // Ancho en mm (A4 = 210mm, dejamos margen)
-      const pageHeight = pdf.internal.pageSize.height
+  
+      const imgWidth = 190
       const imgHeight = (canvas.height * imgWidth) / canvas.width
-      let heightLeft = imgHeight
-
-      let position = 10 // Margen superior
-
-      // Agregar imagen al PDF
+      let position = 10
+  
       pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight)
-      heightLeft -= pageHeight
-
-      // Si el contenido es muy largo, agregar páginas
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight
-        pdf.addPage()
-        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight)
-        heightLeft -= pageHeight
-      }
-
-      // Descargar el PDF
+  
       const numeroVenta = ventaData.numeroVenta || `ticket-${Date.now()}`
       pdf.save(`${numeroVenta}.pdf`)
-      
+  
       console.log('✅ PDF generado correctamente')
-      
+  
     } catch (error) {
       console.error('❌ Error al generar PDF:', error)
       alert('Error al descargar el ticket. Por favor, intenta de nuevo.')
@@ -91,6 +71,7 @@ export const Ticket = () => {
       setIsGeneratingPDF(false)
     }
   }
+  
 
   const handleNewPurchase = () => {
     // Limpiar todo y volver al inicio
@@ -135,7 +116,7 @@ export const Ticket = () => {
           <div ref={ticketRef} className="ticket">
             {/* Header del ticket */}
             <div className="ticket-header">
-              <img src="/favicon.png" alt="DATA DREAM" className="ticket-logo" />
+              <img src="/public/images/favicon.png" alt="DATA DREAM" className="ticket-logo" />
               <div className="ticket-company">
                 <h2>DATA DREAM</h2>
                 <p>Yamila Sueldo</p>
@@ -211,11 +192,6 @@ export const Ticket = () => {
             <div className="ticket-footer">
               <p>¡Gracias por tu compra!</p>
               <p>Conserva este ticket como comprobante</p>
-              <div className="qr-placeholder">
-                <div className="qr-box">
-                  <span>QR</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>

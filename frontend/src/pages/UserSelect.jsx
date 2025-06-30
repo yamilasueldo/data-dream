@@ -6,7 +6,7 @@ export const UserSelect = () => {
     <div className="user-select">
       <div className="user-select-container">
         <div className="user-select-header">
-          <img src="/public/images/favicon.png" alt="DATA DREAM" className="logo-large" />
+          <img src="/images/favicon.png" alt="DATA DREAM" className="logo-large" />
           <h1>Bienvenido a DATA DREAM</h1>
           <p>Selecciona cómo deseas acceder al sistema</p>
         </div>

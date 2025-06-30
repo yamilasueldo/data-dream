@@ -4,7 +4,7 @@ export const Footer = () => {
       <div className="footer-container">
         <div className="footer-content">
           <div className="footer-brand">
-            <img src="/public/images/favicon.png" alt="DATA DREAM" className="footer-logo" />
+            <img src="/images/favicon.png" crossOrigin="anonymous" alt="DATA DREAM" className="footer-logo" />
             <div>
               <h3>DATA DREAM</h3>
               <p>Tu tienda de confianza</p>
