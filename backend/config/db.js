@@ -1,11 +1,10 @@
-const { sequelize, Usuario, Producto } = require('../Modelos');
+const { sequelize, Usuario, Producto } = require('../modelos');
 require('dotenv').config();
 
 const seedDatabase = async () => {
   try {
-    console.log('🌱 Iniciando seeding de la base de datos...');
-    
-    // Sincronizar base de datos (recrear tablas)
+    console.log(' Iniciando seeding de la base de datos');
+    // Conectar a la base de datos
     await sequelize.sync({ force: true });
     console.log('✅ Tablas creadas correctamente');
 
@@ -149,32 +148,19 @@ const seedDatabase = async () => {
     const activeProducts = await Producto.count({ where: { activo: true } });
     
     console.log(`
-🎉 Seeding completado exitosamente!
-📊 Estadísticas:
-   - Usuarios: 1 (admin)
-   - Productos totales: ${totalProducts}
-   - Productos activos: ${activeProducts}
-   - Productos inactivos: ${totalProducts - activeProducts}
-
-🔑 Credenciales de admin:
+   Credenciales de admin:
    Email: ${adminUser.email}
    Password: ${process.env.DEFAULT_ADMIN_PASSWORD || 'admin123'}
-
-📝 Nomenclatura actualizada:
-   - Modelos: Usuario, Producto, Venta
-   - Controladores: ControladorProducto
-   - Endpoints: /api/productos
     `);
 
   } catch (error) {
-    console.error('❌ Error durante el seeding:', error);
+    console.error(' Error', error);
     console.error('Stack completo:', error.stack);
   } finally {
     process.exit(0);
   }
 };
 
-// Ejecutar seeding si se llama directamente
 if (require.main === module) {
   seedDatabase();
 }

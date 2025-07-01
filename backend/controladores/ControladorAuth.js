@@ -1,16 +1,6 @@
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 
-// Usuario temporal hasta conectar con la base de datos
-const usuarioTemp = {
-  id: 1,
-  nombre: 'Admin',
-  apellido: 'Sistema', 
-  email: 'admin@datadream.com',
-  password: 'admin123', // En producción esto estaría hasheado
-  rol: 'super_admin'
-};
-
 class ControladorAuth {
   
   // ==========================================
@@ -58,9 +48,8 @@ class ControladorAuth {
     }
   }
   
-  // ==========================================
   // PROCESAMIENTO DE REGISTRO
-  // ==========================================
+ 
   
   static procesarRegistro(req, res) {
     try {
@@ -77,7 +66,7 @@ class ControladorAuth {
       
       const { nombre, apellido, email, password } = req.body;
       
-      // Verificar si el usuario ya existe (simulado)
+      // Verificar si el usuario ya existe 
       if (email === usuarioTemp.email) {
         return res.render('admin/register', {
           error: 'Ya existe un usuario con este email',
@@ -103,9 +92,9 @@ class ControladorAuth {
     }
   }
   
-  // ==========================================
+ 
   // LOGOUT
-  // ==========================================
+  
   
   static logout(req, res) {
     try {
@@ -122,9 +111,8 @@ class ControladorAuth {
     }
   }
   
-  // ==========================================
   // MIDDLEWARE DE VERIFICACIÓN
-  // ==========================================
+ 
   
   static verificarAuth(req, res, next) {
     try {
@@ -169,9 +157,9 @@ class ControladorAuth {
     }
   }
   
-  // ==========================================
+  
   // VERIFICAR ADMIN (MIDDLEWARE)
-  // ==========================================
+ 
   
   static verificarAdmin(req, res, next) {
     if (!req.usuario) {
@@ -191,10 +179,8 @@ class ControladorAuth {
     next();
   }
   
-  // ==========================================
-  // VERIFICAR TOKEN (API)
-  // ==========================================
-  
+
+  // VERIFICAR TOKEN (API)  
   static verificarToken(req, res) {
     try {
       const token = req.cookies['admin-token'] || req.headers.authorization?.replace('Bearer ', '');
@@ -237,9 +223,8 @@ class ControladorAuth {
     }
   }
   
-  // ==========================================
+
   // VERIFICAR SESIÓN ADMIN (MIDDLEWARE API)
-  // ==========================================
   
   static verificarSesionAdmin(req, res, next) {
     try {

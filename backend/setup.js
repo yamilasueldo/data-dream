@@ -1,25 +1,35 @@
-// setup.js - Script para configuración automática
 const { sequelize, Usuario, Producto } = require('./modelos');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const setupDatabase = async () => {
   try {
-    console.log('🚀 Iniciando configuración automática...');
+    console.log(' Iniciando configuración automática de DATA DREAM...');
     
-    // Verificar conexión
-    console.log('🔍 Verificando conexión a la base de datos...');
+    // Verificar que existe el archivo .env
+    if (!fs.existsSync('.env')) {
+      console.log('⚠️  No se encontró archivo .env, creando uno por defecto...');
+      await crearArchivoEnv();
+    }
+    
+    // Crear directorios necesarios
+    await crearDirectorios();
+    
+    console.log(' Verificando conexión a la base de datos...');
     await sequelize.authenticate();
-    console.log('✅ Conexión establecida correctamente');
+    console.log('Conexión establecida correctamente');
     
     // Mostrar información de conexión
     console.log(`📊 Información de conexión:
-   - Tipo: ${process.env.DB_TYPE || 'sqlite'}
+   - Dialecto: ${sequelize.getDialect()}
    - Host: ${process.env.DB_HOST || 'localhost'}
-   - Base de datos: ${process.env.DB_NAME || 'database.sqlite'}
-   - Usuario: ${process.env.DB_USER || 'N/A'}`);
+   - Puerto: ${process.env.DB_PORT || '3306'}
+   - Base de datos: ${process.env.DB_NAME || 'data_dream'}
+   - Usuario: ${process.env.DB_USER || 'root'}`);
     
-    // Sincronizar modelos (crear tablas)
-    console.log('🔄 Sincronizando modelos...');
+    // Sincronizar modelos (crear/actualizar tablas)
+    console.log('🔄 Sincronizando modelos de base de datos...');
     await sequelize.sync({ force: true }); // force: true recrea las tablas
     console.log('✅ Tablas creadas/actualizadas correctamente');
     
@@ -27,10 +37,10 @@ const setupDatabase = async () => {
     console.log('👤 Creando usuario administrador por defecto...');
     
     const adminUser = await Usuario.create({
-      nombre: 'Admin',
-      apellido: 'Sistema',
-      email: 'admin@datadream.com',
-      password: 'admin123',
+      nombre: 'Yamila',
+      apellido: 'Sueldo',
+      email: process.env.DEFAULT_ADMIN_EMAIL || 'admin@datadream.com',
+      password: process.env.DEFAULT_ADMIN_PASSWORD || 'admin123',
       rol: 'super_admin',
       activo: true
     });
@@ -38,16 +48,18 @@ const setupDatabase = async () => {
     console.log('✅ Usuario administrador creado:', {
       id: adminUser.id,
       email: adminUser.email,
-      nombre: adminUser.nombre + ' ' + adminUser.apellido
+      nombre: adminUser.nombre + ' ' + adminUser.apellido,
+      rol: adminUser.rol
     });
     
     // Crear productos de ejemplo
-    console.log('📦 Creando productos de ejemplo...');
+    console.log('📦 Creando catálogo de productos de ejemplo...');
     
     const productosEjemplo = [
+      // CATEGORÍA: ROPA
       {
-        nombre: 'Remera Básica Negra',
-        descripcion: 'Remera de algodón 100% de corte clásico',
+        nombre: 'Remera Básica Data Dream',
+        descripcion: 'Remera de algodón 100% con logo bordado de la marca',
         categoria: 'ropa',
         precio: 15000,
         imagen: '/img/img1.png',
@@ -55,11 +67,13 @@ const setupDatabase = async () => {
         color: 'Negro',
         talla: 'M',
         material: 'Algodón 100%',
-        activo: true
+        peso: 180,
+        activo: true,
+        destacado: false
       },
       {
         nombre: 'Remera Estampada Vintage',
-        descripcion: 'Remera con estampado retro exclusivo',
+        descripcion: 'Remera con estampado retro exclusivo de edición limitada',
         categoria: 'ropa',
         precio: 18000,
         imagen: '/img/img2.png',
@@ -67,7 +81,9 @@ const setupDatabase = async () => {
         color: 'Blanco',
         talla: 'L',
         material: 'Algodón 90% - Elastano 10%',
-        activo: true
+        peso: 190,
+        activo: true,
+        destacado: true
       },
       {
         nombre: 'Buzo Canguro Premium',
@@ -79,24 +95,27 @@ const setupDatabase = async () => {
         color: 'Gris',
         talla: 'XL',
         material: 'Algodón 80% - Poliéster 20%',
-        activo: true
+        peso: 420,
+        activo: true,
+        destacado: false
       },
       {
         nombre: 'Remera Deportiva Tech',
-        descripcion: 'Remera técnica de secado rápido para deportes',
+        descripcion: 'Remera técnica de secado rápido para deportes y entrenamientos',
         categoria: 'ropa',
         precio: 20000,
         imagen: '/img/img4.png',
         stock: 30,
-        destacado: true,
         color: 'Azul',
         talla: 'S',
-        material: 'Poliéster técnico',
-        activo: true
+        material: 'Poliéster técnico DRI-FIT',
+        peso: 160,
+        activo: true,
+        destacado: true
       },
       {
         nombre: 'Buzo Oversize Trendy',
-        descripcion: 'Buzo de corte holgado, perfecto para el estilo actual',
+        descripcion: 'Buzo de corte holgado, perfecto para el estilo urbano actual',
         categoria: 'ropa',
         precio: 28000,
         imagen: '/img/img5.png',
@@ -104,45 +123,71 @@ const setupDatabase = async () => {
         color: 'Beige',
         talla: 'XL',
         material: 'Algodón orgánico',
-        activo: true
+        peso: 450,
+        activo: true,
+        destacado: false
       },
       {
+        nombre: 'Remera Polo Clásica',
+        descripcion: 'Polo de corte clásico para ocasiones casuales y formales',
+        categoria: 'ropa',
+        precio: 22000,
+        imagen: '/img/img6.png',
+        stock: 18,
+        color: 'Azul Marino',
+        talla: 'M',
+        material: 'Algodón Piqué',
+        peso: 220,
+        activo: true,
+        destacado: false
+      },
+      
+      // CATEGORÍA: ACCESORIOS
+      {
         nombre: 'Gorra Snapback Clásica',
-        descripcion: 'Gorra ajustable con visera plana y logo bordado',
+        descripcion: 'Gorra ajustable con visera plana y logo bordado DATA DREAM',
         categoria: 'accesorios',
         precio: 12000,
         imagen: '/img/img-05.jpg',
         stock: 40,
         color: 'Negro',
         material: 'Algodón y Poliéster',
-        activo: true
+        dimensiones: 'Talle único',
+        peso: 85,
+        activo: true,
+        destacado: true
       },
       {
         nombre: 'Gorra Trucker Vintage',
-        descripcion: 'Gorra con malla trasera y diseño retro',
+        descripcion: 'Gorra con malla trasera y diseño retro de los 90s',
         categoria: 'accesorios',
         precio: 14000,
         imagen: '/img/img-06.jpg',
         stock: 35,
         color: 'Blanco',
-        material: 'Algodón y malla',
-        activo: false // Para probar funcionalidad de activar/desactivar
+        material: 'Algodón frontal y malla trasera',
+        dimensiones: 'Ajustable',
+        peso: 95,
+        activo: false, 
+        destacado: false
       },
       {
         nombre: 'Gorra Dad Hat Casual',
-        descripcion: 'Gorra de perfil bajo para uso diario',
+        descripcion: 'Gorra de perfil bajo para uso diario y casual',
         categoria: 'accesorios',
         precio: 13000,
         imagen: '/img/img-07.jpg',
         stock: 25,
-        destacado: true,
-        color: 'Verde',
+        color: 'Verde Oliva',
         material: 'Algodón 100%',
-        activo: true
+        dimensiones: 'Regulable',
+        peso: 80,
+        activo: true,
+        destacado: true
       },
       {
         nombre: 'Billetera Cuero Premium',
-        descripcion: 'Billetera de cuero genuino con múltiples compartimentos',
+        descripcion: 'Billetera de cuero genuino con múltiples compartimentos y protección RFID',
         categoria: 'accesorios',
         precio: 22000,
         imagen: '/img/img-08.jpg',
@@ -150,80 +195,180 @@ const setupDatabase = async () => {
         color: 'Marrón',
         material: 'Cuero genuino',
         dimensiones: '11cm x 8cm x 2cm',
-        activo: true
+        peso: 120,
+        activo: true,
+        destacado: false
       },
       {
         nombre: 'Billetera Minimalista Pro',
-        descripcion: 'Billetera compacta de diseño minimalista moderno',
+        descripcion: 'Billetera compacta de diseño minimalista con tecnología anti-clonación',
         categoria: 'accesorios',
         precio: 18000,
         imagen: '/img/img-09.jpg',
         stock: 22,
         color: 'Negro',
-        material: 'Cuero sintético',
+        material: 'Cuero sintético premium',
         dimensiones: '10cm x 7cm x 1cm',
-        activo: true
+        peso: 85,
+        activo: true,
+        destacado: false
+      },
+      {
+        nombre: 'Mochila Urbana Data Dream',
+        descripcion: 'Mochila resistente con compartimento para laptop y múltiples bolsillos',
+        categoria: 'accesorios',
+        precio: 35000,
+        imagen: '/img/img-10.jpg',
+        stock: 15,
+        color: 'Negro',
+        material: 'Poliéster resistente al agua',
+        dimensiones: '45cm x 30cm x 15cm',
+        peso: 680,
+        activo: true,
+        destacado: true
+      },
+      {
+        nombre: 'Lentes de Sol Retro',
+        descripcion: 'Lentes de sol con diseño vintage y protección UV 400',
+        categoria: 'accesorios',
+        precio: 16000,
+        imagen: '/img/img-11.jpg',
+        stock: 28,
+        color: 'Negro',
+        material: 'Acetato y cristal polarizado',
+        dimensiones: 'Talle único',
+        peso: 35,
+        activo: true,
+        destacado: false
       }
     ];
     
-    await Producto.bulkCreate(productosEjemplo);
-    console.log('✅ Productos de ejemplo creados');
+    const productosCreados = await Producto.bulkCreate(productosEjemplo);
+    console.log(`✅ ${productosCreados.length} productos de ejemplo creados correctamente`);
     
-    // Verificar creación
-    const totalUsuarios = await Usuario.count();
-    const totalProductos = await Producto.count();
-    const productosActivos = await Producto.count({ where: { activo: true } });
+  
     
     console.log(`
-🎉 ¡Configuración completada exitosamente!
-
-📊 Resumen:
-   - Usuarios creados: ${totalUsuarios}
-   - Productos totales: ${totalProductos}
-   - Productos activos: ${productosActivos}
-   - Productos inactivos: ${totalProductos - productosActivos}
-
 🔑 Credenciales de administrador:
-   Email: admin@datadream.com
-   Password: admin123
+   📧 Email: ${adminUser.email}
+   🔒 Password: ${process.env.DEFAULT_ADMIN_PASSWORD || 'admin123'}
+   👤 Rol: ${adminUser.rol}
 
-🌐 URLs para probar:
-   - Login Admin: http://localhost:3000/admin/login
-   - Dashboard: http://localhost:3000/admin/dashboard
-   - Diagnóstico: http://localhost:3000/admin/diagnostico
-   - API Productos: http://localhost:3000/api/productos
+🌐 URLs del sistema:
+   🏠 Aplicación: http://localhost:5173/
+   🔐 Login Admin: http://localhost:3000/admin/login
+   📊 Dashboard: http://localhost:3000/admin/dashboard
+   🔌 API Base: http://localhost:3000/api/productos
+   📈 Estadísticas API: http://localhost:3000/api/productos/categorias/estadisticas
 
-🚀 Para iniciar el servidor: npm run dev
+🚀 Comandos para iniciar:
+   Backend:  cd backend && npm run dev
+   Frontend: cd frontend && npm run dev
+
+📅 Proyecto: Trabajo Práctico Integrador 2025
     `);
     
   } catch (error) {
     console.error('❌ Error durante la configuración:', error);
     
+    // Diagnósticos específicos
     if (error.name === 'SequelizeConnectionError') {
-      console.error(`
-🔧 Problema de conexión a la base de datos:
-
-Si usas MySQL/XAMPP:
-1. Asegúrate de que XAMPP esté ejecutándose
-2. Crea la base de datos 'data_dream_db' en phpMyAdmin
-3. Verifica las credenciales en el archivo .env
-
-Si usas SQLite:
-1. Cambia DB_TYPE=sqlite en tu .env
-2. No necesitas XAMPP para SQLite
-
-Configuración actual:
-- DB_TYPE: ${process.env.DB_TYPE}
-- DB_HOST: ${process.env.DB_HOST}
-- DB_NAME: ${process.env.DB_NAME}
-      `);
+      console.error(`PROBLEMA DE CONEXIÓN A LA BASE DE DATOS `);
+    } else if (error.name === 'SequelizeValidationError') {
+      console.error('❌ Error de validación en los datos:', error.errors);
+    } else {
+      console.error('❌ Error inesperado:', error.message);
     }
     
-    console.error('Stack completo:', error.stack);
+    console.error('\n📋 Stack completo para debugging:', error.stack);
   } finally {
+    console.log('\n🔚 Finalizando script de configuración...');
     process.exit(0);
   }
 };
+
+// Función para crear directorios necesarios
+async function crearDirectorios() {
+  const directorios = [
+    'uploads',
+    'uploads/productos',
+    'vista/admin',
+    'estaticos/css',
+    'estaticos/js',
+    'estaticos/img'
+  ];
+
+  console.log('📁 Verificando/creando directorios necesarios...');
+  
+  for (const dir of directorios) {
+    const rutaCompleta = path.join(__dirname, dir);
+    if (!fs.existsSync(rutaCompleta)) {
+      fs.mkdirSync(rutaCompleta, { recursive: true });
+      console.log(`  ✅ Creado: ${dir}`);
+    } else {
+      console.log(`  ✅ Existe: ${dir}`);
+    }
+  }
+}
+
+// Función para crear archivo .env por defecto
+async function crearArchivoEnv() {
+  const envContent = `# Configuración de Base de Datos - DATA DREAM
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=data_dream
+DB_USER=root
+DB_PASSWORD=
+DB_DIALECT=mysql
+
+# Configuración JWT
+JWT_SECRET=clave_super_secreta_pero_enserio_yamila_sueldo_2025
+
+# Configuración del Servidor
+PORT=3000
+NODE_ENV=development
+
+# Usuario Administrador por Defecto
+DEFAULT_ADMIN_EMAIL=admin@datadream.com
+DEFAULT_ADMIN_PASSWORD=admin123
+
+# URL del Frontend (para CORS)
+FRONTEND_URL=http://localhost:5173
+
+# Configuración de Archivos
+MAX_FILE_SIZE=5242880
+
+# Información del Proyecto
+PROJECT_NAME=DATA DREAM
+PROJECT_AUTHOR=Yamila Sueldo
+PROJECT_YEAR=2025
+`;
+
+  fs.writeFileSync('.env', envContent);
+  console.log('✅ Archivo .env creado con configuración por defecto');
+  console.log('⚠️  Recuerda ajustar las credenciales de base de datos si es necesario');
+}
+
+// Función para obtener estadísticas
+async function obtenerEstadisticas() {
+  const usuarios = await Usuario.count();
+  const productosTotal = await Producto.count();
+  const productosActivos = await Producto.count({ where: { activo: true } });
+  const productosInactivos = productosTotal - productosActivos;
+  const ropa = await Producto.count({ where: { categoria: 'ropa', activo: true } });
+  const accesorios = await Producto.count({ where: { categoria: 'accesorios', activo: true } });
+  const destacados = await Producto.count({ where: { destacado: true, activo: true } });
+
+  return {
+    usuarios,
+    productosTotal,
+    productosActivos,
+    productosInactivos,
+    ropa,
+    accesorios,
+    destacados
+  };
+}
 
 // Ejecutar setup si se llama directamente
 if (require.main === module) {

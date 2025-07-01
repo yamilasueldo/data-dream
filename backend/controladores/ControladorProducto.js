@@ -41,7 +41,7 @@ class ControladorProducto {
         console.log('🔍 Filtrando por búsqueda:', busqueda);
       }
 
-      console.log('🗂️ Condiciones WHERE:', condicionesWhere);
+      console.log(' Condiciones WHERE:', condicionesWhere);
 
       const { count, rows: productos } = await Producto.findAndCountAll({
         where: condicionesWhere,
@@ -244,7 +244,7 @@ class ControladorProducto {
       await producto.update(datosActualizacion);
       await producto.reload(); // Recargar para obtener datos actualizados
 
-      console.log('✅ Producto actualizado:', producto.toJSON());
+      console.log(' Producto actualizado:', producto.toJSON());
 
       res.json({
         exito: true,

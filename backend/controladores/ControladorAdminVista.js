@@ -1,53 +1,7 @@
 const { validationResult } = require('express-validator');
 
-// Lista temporal de productos hasta conectar con la base de datos
-let productosTemp = [
-  {
-    id: 1,
-    nombre: 'Remera Básica Data Dream',
-    descripcion: 'Remera de algodón 100% con logo bordado',
-    categoria: 'ropa',
-    precio: 15000,
-    imagen: '/img/img1.png',
-    stock: 25,
-    color: 'Negro',
-    talla: 'M',
-    material: 'Algodón 100%',
-    activo: true
-  },
-  {
-    id: 2,
-    nombre: 'Gorra Snapback',
-    descripcion: 'Gorra ajustable con visera plana',
-    categoria: 'accesorios',
-    precio: 12000,
-    imagen: '/img/img-05.jpg',
-    stock: 40,
-    color: 'Negro',
-    material: 'Algodón y Poliéster',
-    activo: true
-  },
-  {
-    id: 3,
-    nombre: 'Buzo Premium',
-    descripcion: 'Buzo con capucha de alta calidad',
-    categoria: 'ropa',
-    precio: 25000,
-    imagen: '/img/img3.png',
-    stock: 15,
-    color: 'Gris',
-    talla: 'XL',
-    material: 'Algodón 80% - Poliéster 20%',
-    activo: false // Para probar activar/desactivar
-  }
-];
-
 class ControladorAdminVista {
-  
-  // ==========================================
-  // VISTAS DE AUTENTICACIÓN
-  // ==========================================
-  
+
   static mostrarLogin(req, res) {
     const error = req.query.error || null;
     const success = req.query.success || null;
@@ -169,7 +123,6 @@ class ControladorAdminVista {
       
       const { nombre, descripcion, categoria, precio, stock, color, talla, material } = req.body;
       
-      // Crear nuevo producto
       const nuevoProducto = {
         id: Math.max(...productosTemp.map(p => p.id)) + 1,
         nombre: nombre.trim(),
