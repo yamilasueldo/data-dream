@@ -171,22 +171,6 @@
                     </small>
                 </div>
 
-                <!-- Estados (solo para editar) -->
-                <% if (producto) { %>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" 
-                                   name="activo" 
-                                   value="true" 
-                                   <%= producto.activo ? 'checked' : '' %>>
-                            Producto activo (visible en la tienda)
-                        </label>
-                    </div>
-
-
-                </div>
-                <% } %>
 
                 <!-- Botones de acción -->
                 <div class="form-actions">

@@ -189,96 +189,78 @@ app.get('/admin/login', (req, res) => {
   });
 });
 
-// Registro (GET)
+// Registro de administrador (GET)
 app.get('/admin/register', (req, res) => {
-  res.render('register', {
-    titulo: 'Registro - DATA DREAM',
-    error: req.query.error || null,
-    success: req.query.success || null,
-    errors: [],
-    formData: {}
+  res.render('register', { 
+    error: req.query.error,
+    success: req.query.success,
+    titulo: 'Registro - DATA DREAM'
   });
 });
 
-// Función auxiliar para validar datos de registro
-const validarRegistro = (req, res, next) => {
-  const { nombre, apellido, email, password, confirmPassword } = req.body;
-  const errors = [];
-  
-  // Validaciones
-  if (!nombre || nombre.trim().length < 2) {
-    errors.push({ msg: 'El nombre debe tener al menos 2 caracteres' });
-  }
-  
-  if (!apellido || apellido.trim().length < 2) {
-    errors.push({ msg: 'El apellido debe tener al menos 2 caracteres' });
-  }
-  
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailRegex.test(email)) {
-    errors.push({ msg: 'Debe ser un email válido' });
-  }
-  
-  if (!password || password.length < 6) {
-    errors.push({ msg: 'La contraseña debe tener al menos 6 caracteres' });
-  }
-  
-  if (password !== confirmPassword) {
-    errors.push({ msg: 'Las contraseñas no coinciden' });
-  }
-  
-  // Validación de fortaleza de contraseña
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
-  if (password && !passwordRegex.test(password)) {
-    errors.push({ msg: 'La contraseña debe contener al menos una mayúscula, una minúscula y un número' });
-  }
-  
-  if (errors.length > 0) {
-    return res.render('register', {
-      titulo: 'Registro - DATA DREAM',
-      error: null,
-      success: null,
-      errors: errors,
-      formData: { nombre, apellido, email }
-    });
-  }
-  
-  next();
-};
-
 // Procesamiento del registro (POST)
-app.post('/admin/register', validarRegistro, async (req, res) => {
+app.post('/admin/auth/registro', async (req, res) => {
   try {
     const { nombre, apellido, email, password } = req.body;
     
-    // Hacer solicitud a la API interna
-    const response = await fetch(`http://localhost:${PORT}/api/auth/registro`, {
+    // Validaciones básicas
+    if (!nombre || !apellido || !email || !password) {
+      return res.render('register', {
+        error: 'Todos los campos son obligatorios',
+        formData: req.body,
+        titulo: 'Registro - DATA DREAM'
+      });
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.render('register', {
+        error: 'Formato de email inválido',
+        formData: req.body,
+        titulo: 'Registro - DATA DREAM'
+      });
+    }
+
+    // Validar contraseña (mínimo 6 caracteres, mayúscula, minúscula, número)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.render('register', {
+        error: 'La contraseña debe tener al menos 6 caracteres, una mayúscula, una minúscula y un número',
+        formData: req.body,
+        titulo: 'Registro - DATA DREAM'
+      });
+    }
+
+    // Crear usuario usando la API
+    const response = await fetch('http://localhost:3000/api/auth/registro', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ nombre, apellido, email, password })
     });
 
     const result = await response.json();
 
     if (response.ok) {
-      res.redirect('/admin/login?success=Cuenta creada exitosamente. Puedes iniciar sesión.');
+      // Registro exitoso
+      res.redirect('/admin/login?success=Usuario creado exitosamente. Ya puedes iniciar sesión.');
     } else {
+      // Error en el registro
       res.render('register', {
-        titulo: 'Registro - DATA DREAM',
-        error: result.mensaje || 'Error al crear la cuenta',
-        success: null,
-        errors: [],
-        formData: { nombre, apellido, email }
+        error: result.mensaje || 'Error al crear el usuario',
+        formData: req.body,
+        titulo: 'Registro - DATA DREAM'
       });
     }
+
   } catch (error) {
     console.error('Error en registro:', error);
     res.render('register', {
-      titulo: 'Registro - DATA DREAM',
       error: 'Error interno del servidor',
-      success: null,
-      errors: [],
-      formData: req.body
+      formData: req.body,
+      titulo: 'Registro - DATA DREAM'
     });
   }
 });

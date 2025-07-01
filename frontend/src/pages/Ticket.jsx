@@ -220,7 +220,6 @@ export const Ticket = () => {
         {/* Información adicional */}
         <div className="ticket-info-extra">
           <p>Tu ticket ha sido guardado y está listo para descargar</p>
-          <p>Puedes continuar comprando o iniciar una nueva sesión</p>
         </div>
       </div>
     </div>

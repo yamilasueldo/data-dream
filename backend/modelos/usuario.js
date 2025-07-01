@@ -71,7 +71,6 @@ Usuario.prototype.compararPassword = async function(password) {
   return await bcrypt.compare(password, this.password);
 };
 
-// Método para obtener datos sin password
 Usuario.prototype.toJSON = function() {
   const usuario = Object.assign({}, this.dataValues);
   delete usuario.password;
