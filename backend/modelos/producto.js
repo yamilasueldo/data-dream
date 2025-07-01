@@ -52,21 +52,7 @@ const Producto = sequelize.define('Producto', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
-  destacado: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  },
-  // Metadatos adicionales
-  peso: {
-    type: DataTypes.DECIMAL(8, 2),
-    allowNull: true,
-    comment: 'Peso en gramos'
-  },
-  dimensiones: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    comment: 'Dimensiones del producto'
-  },
+ 
   color: {
     type: DataTypes.STRING,
     allowNull: true
@@ -94,7 +80,6 @@ const Producto = sequelize.define('Producto', {
   ]
 });
 
-// Método para formatear precio
 Producto.prototype.obtenerPrecioFormateado = function() {
   return new Intl.NumberFormat('es-AR', {
     style: 'currency',

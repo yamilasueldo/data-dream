@@ -204,7 +204,7 @@ class ControladorProducto {
     }
   }
 
-  // PUT /api/productos/:id - Actualizar producto (requiere auth admin)
+  
   static async actualizarProducto(req, res) {
     try {
       const { id } = req.params;
